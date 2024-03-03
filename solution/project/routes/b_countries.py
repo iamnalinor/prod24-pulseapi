@@ -10,17 +10,16 @@ from ..misc import app, get_db
 
 @app.get("/api/countries")
 def get_countries(
-    region: Annotated[list[str] | None, Query()],
+    region: Annotated[list[str] | None, Query()] = None,
     db: Session = Depends(get_db),
 ):
-    allowed_regions = ["Africa", "Americas", "Asia", "Europe", "Oceania"]
-    assert400(all(r in allowed_regions for r in region), "invalid region")
-
-    # Select all fields from the countries table filtered by region and return as JSON
-
     countries = db.query(Country)
+
     if region:
+        allowed_regions = ["Africa", "Americas", "Asia", "Europe", "Oceania"]
+        assert400(all(r in allowed_regions for r in region), "invalid region")
         countries = countries.filter(Country.region.in_(region))
+
     countries = countries.all()
 
     return [
