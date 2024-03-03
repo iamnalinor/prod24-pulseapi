@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
@@ -19,6 +20,11 @@ app.add_middleware(
 @app.exception_handler(ClientRequestError)
 async def bad_request_exception_handler(request, exc):
     return JSONResponse({"reason": exc.reason}, status_code=exc.status_code)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return JSONResponse({"reason": f"validation error: {exc}"}, status_code=400)
 
 
 def get_db():
