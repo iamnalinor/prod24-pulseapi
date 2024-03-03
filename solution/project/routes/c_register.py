@@ -72,6 +72,4 @@ def register_user(user: UserRegisterModel, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
 
-    return JSONResponse(
-        {"profile": Profile.from_orm(user).as_json()}, status_code=201
-    )
+    return JSONResponse({"profile": Profile.from_orm(user).as_json()}, status_code=201)
