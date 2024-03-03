@@ -10,7 +10,7 @@ from ..errors import assert400, assert409
 from ..misc import app, get_db
 from ..models.user import Profile, UserRegisterModel
 from ..utils import hash_password, rand_string
-from ..validations import validate_phone, validate_country_code, validate_image
+from ..validations import validate_country_code, validate_image, validate_phone
 
 
 @app.post("/api/auth/register")

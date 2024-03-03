@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import cast, Annotated
+from typing import Annotated, cast
 
 import jwt
 from fastapi import Depends
