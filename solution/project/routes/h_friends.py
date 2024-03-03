@@ -1,0 +1,84 @@
+from typing import Annotated
+
+from fastapi import Depends
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from ..database.users import User, Friendship
+from ..errors import assert403
+from ..misc import app, get_db
+from ..models.user import Profile
+from ..tokens import resolve_token_into_user
+
+
+class LoginModel(BaseModel):
+    login: str
+
+
+@app.post("/api/friends/add")
+async def add_friend(
+    login: LoginModel,
+    user: User = Depends(resolve_token_into_user),
+    db: Session = Depends(get_db),
+):
+    if user.login != login.login:
+        target = db.query(User).filter(User.login == login.login).one()
+
+        if (
+            not db.query(Friendship)
+            .filter(Friendship.source == user.id, Friendship.target == target.id)
+            .first()
+        ):
+            db.add(
+                Friendship(
+                    source=user.id,
+                    target=target.id,
+                )
+            )
+            db.commit()
+
+    return {"status": "ok"}
+
+
+@app.post("/api/friends/remove")
+async def remove_friend(
+    login: LoginModel,
+    user: User = Depends(resolve_token_into_user),
+    db: Session = Depends(get_db),
+):
+    if user.login != login.login:
+        target = db.query(User).filter(User.login == login.login).one_or_none()
+
+        if target:
+            db.query(Friendship).filter(
+                Friendship.source == user.id, Friendship.target == target.id
+            ).delete()
+            db.commit()
+
+    return {"status": "ok"}
+
+
+@app.get("/api/friends")
+async def get_friends(
+    limit: int = 5,
+    offset: int = 0,
+    user: User = Depends(resolve_token_into_user),
+    db: Session = Depends(get_db),
+):
+    friends = (
+        db.query(User.login, Friendship.created_at)
+        .join(User, Friendship.target == User.id)
+        .filter(Friendship.source == user.id)
+        .order_by(Friendship.created_at.desc())
+        .limit(limit)
+        .offset(offset)
+        .all()
+    )
+
+    return [
+        {
+            "login": login,
+            "addedAt": created_at.isoformat() + "Z00:00",
+        }
+        for login, created_at in friends
+    ]
