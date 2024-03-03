@@ -4,12 +4,17 @@ class ClientRequestError(Exception):
         self.reason = reason
 
 
-def assert400(condition, reason: str = "invalid data passed"):
+def assert400(condition, reason: str = "bad request"):
     if not condition:
         raise ClientRequestError(400, reason)
 
 
-def assert404(condition, reason: str = "object not found"):
+def assert401(condition, reason: str = "unauthorized"):
+    if not condition:
+        raise ClientRequestError(400, reason)
+
+
+def assert404(condition, reason: str = "not found"):
     if not condition:
         raise ClientRequestError(404, reason)
 
