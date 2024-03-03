@@ -10,7 +10,12 @@ from ..errors import assert400, assert409
 from ..misc import app, get_db
 from ..models.user import Profile, UserRegisterModel
 from ..utils import hash_password, rand_string
-from ..validations import validate_country_code, validate_image, validate_phone
+from ..validations import (
+    validate_country_code,
+    validate_image,
+    validate_phone,
+    validate_password,
+)
 
 
 @app.post("/api/auth/register")
@@ -30,9 +35,7 @@ def register_user(user: UserRegisterModel, db: Session = Depends(get_db)):
         "email conflicts with another user",
     )
 
-    assert400(len(user.password) >= 6, "password has less than 6 characters")
-    for regex in [r"[0-9]", r"[A-Z]", r"[a-z]"]:
-        assert400(re.search(regex, user.password), "password is weak")
+    validate_password(user.password)
 
     validate_country_code(db, user.countryCode)
 

@@ -6,6 +6,12 @@ from .database import Country, User
 from .errors import assert400, assert409
 
 
+def validate_password(password: str):
+    assert400(len(password) >= 6, "password has less than 6 characters")
+    for regex in [r"[0-9]", r"[A-Z]", r"[a-z]"]:
+        assert400(re.search(regex, password), "password is weak")
+
+
 def validate_country_code(db: Session, country_code: str):
     assert400(re.fullmatch(r"[a-zA-Z]{2}", country_code), "invalid countryCode")
     assert400(

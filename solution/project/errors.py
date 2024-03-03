@@ -9,9 +9,16 @@ def assert400(condition, reason: str = "bad request"):
         raise ClientRequestError(400, reason)
 
 
-def assert401(condition, reason: str = "you have passed invalid credentials"):
+def assert401(condition, reason: str = "credentials are invalid or expired"):
     if not condition:
         raise ClientRequestError(401, reason)
+
+
+def assert403(
+    condition, reason: str = "you don't have permission to access this resource"
+):
+    if not condition:
+        raise ClientRequestError(403, reason)
 
 
 def assert404(condition, reason: str = "not found"):
