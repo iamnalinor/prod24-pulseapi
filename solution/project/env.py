@@ -6,4 +6,4 @@ POSTGRES_CONN = env.str("POSTGRES_CONN")
 if "postgresql://" not in POSTGRES_CONN:
     POSTGRES_CONN = POSTGRES_CONN.replace("postgres://", "postgresql://")
 
-TOKEN_TTL_HOURS = 1
+TOKEN_TTL_HOURS = 12
