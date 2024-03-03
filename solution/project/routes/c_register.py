@@ -10,7 +10,7 @@ from ..database.countries import Country
 from ..database.users import User
 from ..errors import assert400, assert409
 from ..misc import app, get_db
-from ..models.user import UserModel, UserRegisterModel
+from ..models.user import Profile, UserRegisterModel
 from ..utils import hash_password, rand_string
 
 
@@ -73,5 +73,5 @@ def register_user(user: UserRegisterModel, db: Session = Depends(get_db)):
     db.commit()
 
     return JSONResponse(
-        {"profile": UserModel.from_orm(user).as_json()}, status_code=201
+        {"profile": Profile.from_orm(user).as_json()}, status_code=201
     )

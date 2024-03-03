@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from ..database import User
 
 
-class UserModel(BaseModel):
+class Profile(BaseModel):
     login: str
     email: str
     countryCode: str
@@ -12,7 +12,7 @@ class UserModel(BaseModel):
     image: str | None = None
 
     @classmethod
-    def from_orm(cls, obj: User) -> "UserModel":
+    def from_orm(cls, obj: User) -> "Profile":
         return cls(
             login=obj.login,
             email=obj.email,
@@ -26,5 +26,5 @@ class UserModel(BaseModel):
         return self.dict(exclude_none=True)
 
 
-class UserRegisterModel(UserModel):
+class UserRegisterModel(Profile):
     password: str
