@@ -51,6 +51,7 @@ def register_user(register: RegisterModel, db: Session = Depends(get_db)):
     )
 
     # replace empty strings with None
+
     register.phone = register.phone or None
     if register.phone:
         assert400(re.fullmatch(r"\+\d{1,20}", register.phone), "invalid phone")
