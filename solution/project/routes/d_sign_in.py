@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from ..database.users import User
 from ..errors import assert400
 from ..misc import app, get_db
-from ..tokens import issue_token, resolve_token
+from ..tokens import issue_token, resolve_token_into_user
 from ..utils import hash_password, rand_string
 
 
@@ -29,6 +29,6 @@ def register_user(sign_in: SignInModel, db: Session = Depends(get_db)):
 
     token = issue_token(user.id, user.jwt_secret)
 
-    assert resolve_token(db, token).id == user.id
+    assert resolve_token_into_user(db, token).id == user.id
 
     return {"token": token}
