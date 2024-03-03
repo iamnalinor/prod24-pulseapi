@@ -22,7 +22,7 @@ from ..validations import (
 def register_user(user: UserRegisterModel, db: Session = Depends(get_db)):
     assert400(re.fullmatch(r"[a-zA-Z0-9-]{1,30}", user.login), "invalid login")
     assert409(
-        db.query(User).filter(User.login == user.login).first() is None,
+        db.query(User).filter(User.login == user.login).one_or_none() is None,
         "login conflicts with another user",
     )
 
@@ -31,7 +31,7 @@ def register_user(user: UserRegisterModel, db: Session = Depends(get_db)):
         "invalid email",
     )
     assert409(
-        db.query(User).filter(User.email == user.email).first() is None,
+        db.query(User).filter(User.email == user.email).one_or_none() is None,
         "email conflicts with another user",
     )
 

@@ -35,7 +35,7 @@ def get_countries(
 
 @app.get("/api/countries/{alpha2}")
 def get_country(alpha2: str, db: Session = Depends(get_db)):
-    country = db.query(Country).filter(Country.alpha2 == alpha2).first()
+    country = db.query(Country).filter(Country.alpha2 == alpha2).one_or_none()
     assert404(country is not None)
 
     return {

@@ -16,7 +16,7 @@ class SignInModel(BaseModel):
 
 @app.post("/api/auth/sign-in")
 def register_user(sign_in: SignInModel, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.login == sign_in.login).first()
+    user = db.query(User).filter(User.login == sign_in.login).one_or_none()
     assert400(user, "User not found")
 
     password_hash = hash_password(sign_in.password, user.password_salt)

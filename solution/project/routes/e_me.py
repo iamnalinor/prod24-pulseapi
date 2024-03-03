@@ -39,7 +39,7 @@ def update_profile(
         validate_country_code(db, update.countryCode)
         user.country_code = update.countryCode
 
-    if update.phone != EMPTY:
+    if update.phone != EMPTY and update.phone != user.phone:
         if update.phone:
             validate_phone(db, update.phone)
             user.phone = update.phone or None
