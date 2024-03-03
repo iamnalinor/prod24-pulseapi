@@ -1,14 +1,11 @@
-from typing import Annotated
-
 from fastapi import Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from ..database.users import User, Friendship
-from ..errors import assert403
 from ..misc import app, get_db
-from ..models.user import Profile
 from ..tokens import resolve_token_into_user
+from ..utils import format_datetime
 
 
 class LoginModel(BaseModel):
@@ -78,7 +75,7 @@ async def get_friends(
     return [
         {
             "login": login,
-            "addedAt": created_at.isoformat() + "Z00:00",
+            "addedAt": format_datetime(created_at),
         }
         for login, created_at in friends
     ]
