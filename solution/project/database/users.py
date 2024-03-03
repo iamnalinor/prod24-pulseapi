@@ -10,7 +10,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime(), default=datetime.now(), nullable=False)
+    created_at = Column(DateTime(), server_default=func.now(), nullable=False)
 
     login = Column(String(30), nullable=False, unique=True)
     email = Column(String(50), nullable=False)
@@ -29,7 +29,7 @@ class Friendship(Base):
     __tablename__ = "friendships"
 
     id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime(), default=datetime.now(), nullable=False)
+    created_at = Column(DateTime(), server_default=func.now(), nullable=False)
 
     source = Column(Integer, ForeignKey("users.id"), nullable=False)
     target = Column(Integer, ForeignKey("users.id"), nullable=False)
