@@ -1,4 +1,5 @@
 import re
+from typing import Callable
 
 from sqlalchemy.orm import Session
 
@@ -33,7 +34,12 @@ def validate_image(image: str):
     assert400(1 <= len(image) <= 200, "invalid image")
 
 
-def validate_access(db: Session, source: User, target: User):
+def validate_access(
+    db: Session,
+    source: User,
+    target: User,
+    assert_func: Callable[[bool], None] = assert403,
+):
     have_access = (
         target.id == source.id
         or target.is_public
@@ -44,4 +50,4 @@ def validate_access(db: Session, source: User, target: User):
             is not None
         )
     )
-    assert403(have_access)
+    assert_func(have_access)
