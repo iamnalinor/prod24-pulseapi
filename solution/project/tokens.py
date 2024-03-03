@@ -36,7 +36,7 @@ def resolve_token_into_user(
 
     assert401("user_id" in unsafe_data)
 
-    user = db.query(User).filter(User.id == unsafe_data["user_id"]).first()
+    user = db.query(User).filter(User.id == unsafe_data["user_id"]).one_or_none()
     assert401(user)
     assert401(user.jwt_secret)
 

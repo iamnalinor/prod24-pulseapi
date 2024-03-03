@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
+from sqlalchemy.exc import NoResultFound
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
@@ -25,6 +26,11 @@ async def bad_request_exception_handler(request, exc):
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
     return JSONResponse({"reason": f"validation error: {exc}"}, status_code=400)
+
+
+@app.exception_handler(NoResultFound)
+async def no_result_found_exception_handler(request, exc):
+    return JSONResponse({"reason": "object not found"}, status_code=404)
 
 
 def get_db():

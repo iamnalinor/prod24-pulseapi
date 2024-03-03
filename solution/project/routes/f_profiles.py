@@ -24,8 +24,7 @@ def get_profile(
         or target_user.is_public
         or (
             db.query(Friendship)
-            .filter(Friendship.source == target_user.id)
-            .filter(Friendship.target == user.id)
+            .filter(Friendship.source == target_user.id, Friendship.target == user.id)
             .one_or_none()
             is not None
         )
