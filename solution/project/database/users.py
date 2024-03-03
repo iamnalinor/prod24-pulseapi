@@ -21,3 +21,13 @@ class User(Base):
     country_code = Column(String(2), nullable=False)
     is_public = Column(Boolean, nullable=False)
     image = Column(String(200))
+
+
+class Friendship(Base):
+    __tablename__ = "friendships"
+
+    id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime(), nullable=False)
+
+    source = Column(Integer, ForeignKey("users.id"), nullable=False)
+    target = Column(Integer, ForeignKey("users.id"), nullable=False)
