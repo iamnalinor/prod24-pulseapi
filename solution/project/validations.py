@@ -3,7 +3,8 @@ import re
 from sqlalchemy.orm import Session
 
 from .database import Country, User
-from .errors import assert400, assert409
+from .database.users import Friendship
+from .errors import assert400, assert409, assert403
 
 
 def validate_password(password: str):
@@ -30,3 +31,17 @@ def validate_phone(db: Session, phone: str):
 
 def validate_image(image: str):
     assert400(1 <= len(image) <= 200, "invalid image")
+
+
+def validate_access(db: Session, source: User, target: User):
+    have_access = (
+        target.id == source.id
+        or target.is_public
+        or (
+            db.query(Friendship)
+            .filter(Friendship.source == target.id, Friendship.target == source.id)
+            .one_or_none()
+            is not None
+        )
+    )
+    assert403(have_access)
