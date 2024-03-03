@@ -1,17 +1,12 @@
-import re
-from datetime import datetime
-
 from fastapi import Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from starlette.responses import JSONResponse
 
-from ..database.countries import Country
 from ..database.users import User
-from ..errors import assert400, assert409
+from ..errors import assert400
 from ..misc import app, get_db
-from ..utils import hash_password, rand_string
 from ..tokens import issue_token, resolve_token
+from ..utils import hash_password, rand_string
 
 
 class SignInModel(BaseModel):
