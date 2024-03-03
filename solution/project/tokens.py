@@ -29,7 +29,11 @@ def resolve_token_into_user(
 ) -> User:
     assert401(token)
 
-    unsafe_data = jwt.decode(token, options={"verify_signature": False})
+    try:
+        unsafe_data = jwt.decode(token, options={"verify_signature": False})
+    except InvalidTokenError:
+        return assert401(False)
+
     assert401("user_id" in unsafe_data)
 
     user = db.query(User).filter(User.id == unsafe_data["user_id"]).first()
