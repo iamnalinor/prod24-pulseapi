@@ -33,7 +33,7 @@ def react_on_post(
         .one()
     )
 
-    validate_access(db, user, author)
+    validate_access(db, user, author, assert404)
 
     db.query(Reaction).filter(
         Reaction.post == post_id, Reaction.user == user.id

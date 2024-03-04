@@ -54,6 +54,6 @@ def view_post(
         .one()
     )
 
-    validate_access(db, user, author)
+    validate_access(db, user, author, assert404)
 
     return PostRendered.from_orm(post).as_json()
