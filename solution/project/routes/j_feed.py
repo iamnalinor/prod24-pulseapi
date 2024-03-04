@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import Depends, Query
 from sqlalchemy.orm import Session
 
 from ..database import Post
@@ -15,7 +15,7 @@ from ..validations import validate_access
 
 @app.get("/api/posts/feed/my")
 def get_my_posts(
-    limit: int = 5,
+    limit: int = Query(5, ge=1, le=50),
     offset: int = 0,
     user: User = Depends(resolve_token_into_user),
     db: Session = Depends(get_db),
@@ -35,7 +35,7 @@ def get_my_posts(
 @app.get("/api/posts/feed/{login}")
 def get_my_posts(
     login: str,
-    limit: int = 5,
+    limit: int = Query(5, ge=1, le=50),
     offset: int = 0,
     user: User = Depends(resolve_token_into_user),
     db: Session = Depends(get_db),

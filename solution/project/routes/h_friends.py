@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -57,7 +57,7 @@ async def remove_friend(
 
 @app.get("/api/friends")
 async def get_friends(
-    limit: int = 5,
+    limit: int = Query(5, ge=1, le=50),
     offset: int = 0,
     user: User = Depends(resolve_token_into_user),
     db: Session = Depends(get_db),
