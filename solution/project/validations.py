@@ -10,6 +10,7 @@ from .errors import assert400, assert409, assert403
 
 def validate_password(password: str):
     assert400(len(password) >= 6, "password has less than 6 characters")
+    assert400(len(password) <= 100, "password is too long")
     for regex in [r"[0-9]", r"[A-Z]", r"[a-z]"]:
         assert400(re.search(regex, password), "password is weak")
 

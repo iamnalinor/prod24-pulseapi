@@ -27,7 +27,7 @@ def register_user(user: UserRegisterModel, db: Session = Depends(get_db)):
     )
 
     assert400(
-        user.email and len(user.email) <= 30 and "@" in user.email,
+        user.email and len(user.email) <= 50 and "@" in user.email,
         "invalid email",
     )
     assert409(
