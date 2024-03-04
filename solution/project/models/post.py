@@ -32,6 +32,8 @@ class PostRendered(BaseModel):
             .count()
         )
 
+        db.close()
+
         return cls(
             id=obj.id,
             content=obj.content,
