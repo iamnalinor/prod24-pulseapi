@@ -8,6 +8,7 @@ import httpx
 class Tester:
     def __init__(self, base_url: str):
         self.client = httpx.Client(base_url=base_url)
+        self.base_url = base_url
         self.accounts = {}
 
     def ping(self):
@@ -20,7 +21,11 @@ class Tester:
         if behalf is not None:
             kwargs["headers"] = {"Authorization": "Bearer " + self.accounts[behalf]}
 
+        start = time.perf_counter()
         response = self.client.request(method, path, **kwargs)
+        print(
+            f"{method} {path} {response.status_code} {time.perf_counter() - start:.2f}s"
+        )
         return TestResponse(response)
 
 
@@ -260,5 +265,57 @@ for i in range(105):
 
     if i % 10 == 0:
         t.request(f"GET /posts/{data['id']}", ["2", "3", "4"][i % 3]).assertError(404)
+        time.sleep(0.5)
 
 t.request(f"GET /posts/{post_ids[0]}").assertError(401)
+
+offset = 0
+t.request("GET /posts/feed/my?limit=55", "1").assertError(400)
+resp = [1]
+while resp:
+    resp = (
+        t.request(f"GET /posts/feed/my?limit=10&offset={offset}", "1")
+        .assertStatus(200)
+        .json
+    )
+    offset += len(resp)
+    for post in resp:
+        assert post["id"] in post_ids
+    print(f"Feed offset {offset}")
+    time.sleep(0.5)
+
+assert offset == 105
+
+t.request("POST /posts/0000-0000/like", "1").assertError(404)
+t.request(f"POST /posts/{post_ids[0]}/like", "1").assertStatus(200)
+t.request(f"POST /posts/{post_ids[0]}/like", "1").assertStatus(200)
+t.request(f"POST /posts/{post_ids[0]}/like", "1").assertStatus(200)
+t.request(f"GET /posts/{post_ids[0]}", "1").assertStatus(200).assertLambda(
+    lambda p: p["likesCount"] == 1
+)
+t.request(f"POST /posts/{post_ids[0]}/dislike", "1").assertStatus(200)
+t.request(f"GET /posts/{post_ids[0]}", "1").assertStatus(200).assertLambda(
+    lambda p: p["likesCount"] == 0 and p["dislikesCount"] == 1
+)
+t.request(f"POST /posts/{post_ids[0]}/dislike", "2").assertError(404)
+t.request(f"POST /posts/{post_ids[0]}/dislike", "5").assertStatus(200)
+t.request(f"GET /posts/{post_ids[0]}", "1").assertStatus(200).assertLambda(
+    lambda p: p["likesCount"] == 0 and p["dislikesCount"] == 2
+)
+
+# Tests for feed
+t.request(f"GET /posts/feed/{prefix}1?limit=55", "1").assertError(400)
+t.request(f"GET /posts/feed/{prefix}1", "1").assertStatus(200).assertLambda(
+    lambda p: len(p) == 5
+)
+t.request(f"GET /posts/feed/{prefix}7", "1").assertError(404)
+# add to friends
+t.request("POST /friends/add", "7", json={"login": prefix + "1"}).assertStatus(200)
+t.request(f"GET /posts/feed/{prefix}7", "1").assertStatus(200).assertLambda(
+    lambda p: len(p) == 0
+)
+
+t.request(f"GET /posts/feed/{prefix}1", "7").assertError(404)
+t.request(f"GET /posts/feed/{prefix}1", "5").assertStatus(200).assertLambda(
+    lambda p: len(p) == 5
+)
