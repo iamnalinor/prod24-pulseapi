@@ -21,7 +21,12 @@ def get_my_posts(
     db: Session = Depends(get_db),
 ):
     posts = (
-        db.query(Post).filter(Post.author == user.id).offset(offset).limit(limit).all()
+        db.query(Post)
+        .filter(Post.author == user.id)
+        .order_by(Post.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
     )
     # todo придумать что-то с join
     return [PostRendered.from_orm(post).as_json() for post in posts]
@@ -41,6 +46,7 @@ def get_my_posts(
     posts = (
         db.query(Post)
         .filter(Post.author == author.id)
+        .order_by(Post.created_at.desc())
         .offset(offset)
         .limit(limit)
         .all()

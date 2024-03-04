@@ -64,11 +64,11 @@ async def get_friends(
 ):
     friends = (
         db.query(User.login, Friendship.created_at)
-        .join(User, Friendship.target == User.id)
         .filter(Friendship.source == user.id)
+        .join(User, Friendship.target == User.id)
         .order_by(Friendship.created_at.desc())
-        .limit(limit)
         .offset(offset)
+        .limit(limit)
         .all()
     )
 
