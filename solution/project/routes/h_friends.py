@@ -57,7 +57,7 @@ async def remove_friend(
 
 @app.get("/api/friends")
 async def get_friends(
-    limit: int = Query(5, ge=1, le=50),
+    limit: int = Query(5, ge=0, le=50),
     offset: int = 0,
     user: User = Depends(resolve_token_into_user),
     db: Session = Depends(get_db),
