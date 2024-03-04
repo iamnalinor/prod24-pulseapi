@@ -11,12 +11,13 @@ from .database import User
 from .env import TOKEN_TTL_HOURS
 from .errors import assert401
 from .misc import get_db
+from .utils import rand_string
 
 
 def issue_token(user_id: int, jwt_secret: str) -> str:
     deadline = datetime.now() + timedelta(hours=TOKEN_TTL_HOURS)
     encoded = jwt.encode(
-        {"user_id": user_id, "exp": deadline},
+        {"sub": user_id, "exp": deadline, "jti": rand_string()},
         jwt_secret,
         algorithm="HS256",
     )
@@ -34,9 +35,9 @@ def resolve_token_into_user(
     except InvalidTokenError:
         return assert401(False)
 
-    assert401("user_id" in unsafe_data)
+    assert401("sub" in unsafe_data)
 
-    user = db.query(User).filter(User.id == unsafe_data["user_id"]).one_or_none()
+    user = db.query(User).filter(User.id == unsafe_data["sub"]).one_or_none()
     assert401(user)
     assert401(user.jwt_secret)
 
@@ -45,7 +46,7 @@ def resolve_token_into_user(
     except InvalidTokenError:
         return assert401(False)
 
-    assert data["user_id"] == user.id
+    assert data["sub"] == user.id
     assert user is not None
 
     return cast(User, user)
