@@ -14,11 +14,16 @@ from ..validations import validate_access
 
 @app.post("/api/posts/{post_id}/{action}")
 def react_on_post(
-    post_id: uuid.UUID,
+    post_id: str,
     action: str,
     user: User = Depends(resolve_token_into_user),
     db: Session = Depends(get_db),
 ):
+    try:
+        post_id = uuid.UUID(post_id)
+    except ValueError:
+        assert404(False)
+
     assert404(action in ["like", "dislike"], "Invalid action")
 
     post, author = (

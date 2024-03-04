@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from ..database.posts import Post
 from ..database.users import User
+from ..errors import assert404
 from ..misc import app, get_db
 from ..models.post import PostRendered
 from ..tokens import resolve_token_into_user
@@ -37,10 +38,15 @@ def new_post(
 
 @app.get("/api/posts/{post_id}")
 def view_post(
-    post_id: uuid.UUID,
+    post_id: str,
     user: User = Depends(resolve_token_into_user),
     db: Session = Depends(get_db),
 ):
+    try:
+        post_id = uuid.UUID(post_id)
+    except ValueError:
+        assert404(False)
+
     post, author = (
         db.query(Post, User)
         .join(User, Post.author == User.id)
