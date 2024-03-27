@@ -21,7 +21,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
   ('Andorra','AD','AND','Europe'),
   ('Angola','AO','AGO','Africa'),
   ('Anguilla','AI','AIA','Americas'),
-  ('Antarctica','AQ','ATA',''),
   ('Antigua and Barbuda','AG','ATG','Americas'),
   ('Argentina','AR','ARG','Americas'),
   ('Armenia','AM','ARM','Asia'),
@@ -67,7 +66,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
   ('Congo, Democratic Republic of the','CD','COD','Africa'),
   ('Cook Islands','CK','COK','Oceania'),
   ('Costa Rica','CR','CRI','Americas'),
-  ('Côte d Ivoire','CI','CIV','Africa'),
   ('Croatia','HR','HRV','Europe'),
   ('Cuba','CU','CUB','Americas'),
   ('Curaçao','CW','CUW','Americas'),
@@ -131,11 +129,9 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
   ('Kazakhstan','KZ','KAZ','Asia'),
   ('Kenya','KE','KEN','Africa'),
   ('Kiribati','KI','KIR','Oceania'),
-  ('Korea (Democratic People s Republic of)','KP','PRK','Asia'),
   ('Korea, Republic of','KR','KOR','Asia'),
   ('Kuwait','KW','KWT','Asia'),
   ('Kyrgyzstan','KG','KGZ','Asia'),
-  ('Lao People s Democratic Republic','LA','LAO','Asia'),
   ('Latvia','LV','LVA','Europe'),
   ('Lebanon','LB','LBN','Asia'),
   ('Lesotho','LS','LSO','Africa'),
@@ -261,5 +257,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
   ('Western Sahara','EH','ESH','Africa'),
   ('Yemen','YE','YEM','Asia'),
   ('Zambia','ZM','ZMB','Africa'),
-  ('Zimbabwe','ZW','ZWE','Africa');
+  ('Zimbabwe','ZW','ZWE','Africa'),
+  ('Byteland PROD','YY','YYY','Europe');
 EOSQL
