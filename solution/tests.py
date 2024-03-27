@@ -85,7 +85,7 @@ def register_set(
     return params
 
 
-t = Tester("https://edf1-2a00-1fa2-4c4-8596-b09f-b713-4ea1-c1c6.ngrok-free.app/api")
+t = Tester("http://localhost:8000")
 t.ping()
 
 t.request("GET /countries").assertStatus(200).assertLambda(lambda data: len(data) > 0)
